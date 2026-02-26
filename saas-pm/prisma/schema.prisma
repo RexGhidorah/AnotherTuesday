@@ -69,6 +69,16 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+// Global System Configuration (e.g. SMTP)
+model SystemConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique // e.g., "SMTP_SETTINGS"
+  value     String   // JSON string
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 // --- Multi-tenancy Core Models ---
 
 model Workspace {

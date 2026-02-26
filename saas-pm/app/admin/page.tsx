@@ -16,7 +16,10 @@ export default async function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-8 text-3xl font-bold">Global Admin Dashboard</h1>
+        <div className="mb-8 flex items-center justify-between">
+          <h1 className="text-3xl font-bold">Global Admin Dashboard</h1>
+          <a href="/admin/settings" className="rounded bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300">Settings</a>
+        </div>
         <AdminClientPage />
 
         <div className="rounded-lg bg-white p-6 shadow-md">

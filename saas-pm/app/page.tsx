@@ -3,10 +3,17 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const session = await getServerSession(authOptions);
 
   if (!session) {
+    // Check if system is initialized
+    const userCount = await prisma.user.count();
+    if (userCount === 0) {
+      redirect("/setup");
+    }
     redirect("/login");
   }
 
