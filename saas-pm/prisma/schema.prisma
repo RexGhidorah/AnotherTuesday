@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Roles handled as Strings for SQLite compatibility
+// SUPER_ADMIN, ADMIN, MEMBER
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  password      String?   // For email/password auth
+  image         String?
+  role          String    @default("MEMBER")
+
+  accounts      Account[]
+  sessions      Session[]
+
+  // Multi-tenancy
+  workspaces    WorkspaceMember[]
+  assignedTasks Task[]
+  activityLogs  ActivityLog[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// --- Multi-tenancy Core Models ---
+
+model Workspace {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  slug        String   @unique // For URL routing (e.g., /workspace/marketing)
+
+  members     WorkspaceMember[]
+  projects    Project[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model WorkspaceMember {
+  id          String   @id @default(cuid())
+  userId      String
+  workspaceId String
+  role        String   @default("MEMBER") // Role within this workspace
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workspaceId])
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  workspaceId String
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// TaskStatus as String: TODO, IN_PROGRESS, REVIEW, DONE
+// Priority as String: LOW, MEDIUM, HIGH, URGENT
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  status      String     @default("TODO")
+  priority    String     @default("MEDIUM")
+  dueDate     DateTime?
+  startDate   DateTime? // For Gantt
+  endDate     DateTime? // For Gantt
+
+  projectId   String
+  assigneeId  String?
+
+  // Recurrence
+  isRecurring      Boolean @default(false)
+  recurrencePattern String? // e.g., "DAILY", "WEEKLY"
+  nextOccurrence   DateTime?
+
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignee    User?     @relation(fields: [assigneeId], references: [id])
+
+  activityLogs ActivityLog[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  action      String   // e.g., "CREATED_TASK", "UPDATED_STATUS"
+  details     String?  // JSON or text description
+
+  userId      String
+  taskId      String?
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task        Task?    @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  createdAt   DateTime @default(now())
+}
