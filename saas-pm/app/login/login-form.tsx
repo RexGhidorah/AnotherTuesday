@@ -64,6 +64,23 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
+
+        {process.env.NODE_ENV === "development" && (
+          <div className="mt-8 border-t pt-4 text-center">
+            <p className="mb-2 text-sm text-red-500">Development Mode</p>
+            <button
+              onClick={async () => {
+                if (confirm("This will DELETE ALL DATA. Are you sure?")) {
+                  await fetch("/api/setup/reset", { method: "POST" });
+                  window.location.href = "/setup";
+                }
+              }}
+              className="rounded bg-red-100 px-4 py-2 text-sm text-red-600 hover:bg-red-200"
+            >
+              Reset Database & Go to Setup
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
