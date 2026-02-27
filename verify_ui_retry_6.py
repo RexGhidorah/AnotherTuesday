@@ -7,71 +7,58 @@ def verify_sidebar_accessibility():
         context = browser.new_context(viewport={'width': 1280, 'height': 720})
         page = context.new_page()
 
-        print("Navigating to setup page...")
-        # Start fresh just in case
+        print("Navigating to login page...")
         page.goto("http://localhost:3000/login")
 
-        # Check if we can reset
-        if page.locator("button:has-text('Reset Database & Go to Setup')").count() > 0:
-            print("Resetting database...")
-            page.once("dialog", lambda dialog: dialog.accept())
-            page.click("button:has-text('Reset Database & Go to Setup')")
-            page.wait_for_url("http://localhost:3000/setup", timeout=10000)
-            print("Reset complete. Now on setup page.")
-
-        try:
-            # Step 1: Admin Account
-            print("Filling Step 1: Admin Account")
-            page.fill("input[placeholder='Full Name']", "Sarah Connor")
-            page.fill("input[placeholder='Email Address']", "sarah@example.com")
-            page.fill("input[type='password']", "password123")
-            page.click("button:has-text('Next')")
-            print("Step 1 submitted.")
-
-            # Step 2: SMTP Settings (Optional)
-            print("Filling Step 2: SMTP Settings (skipping inputs)")
-            # Wait for the button to be visible and clickable
-            page.wait_for_selector("button:has-text('Complete Setup')", state="visible")
-            page.click("button:has-text('Complete Setup')")
-            print("Step 2 submitted.")
-
-            # Wait for redirect to login
-            page.wait_for_url("**/login**", timeout=30000)
-            print("Redirected to login.")
-
-            # Login
+        # Check if we are logged in (redirected to / or /admin)
+        if page.url == "http://localhost:3000/" or "/admin" in page.url:
+            print("Already logged in.")
+        else:
             print("Logging in...")
             page.fill("input[id='email']", "sarah@example.com")
             page.fill("input[id='password']", "password123")
             page.click("button[type='submit']")
             page.wait_for_url("http://localhost:3000/", timeout=10000)
-            print("Logged in. Redirected to home.")
+            print("Logged in.")
 
-        except Exception as e:
-            print(f"Setup/Login failed: {e}")
-            page.screenshot(path="verification/setup_error_3.png")
+        # If on Admin, create workspace if needed
+        if "/admin" in page.url:
+             print("On Admin Dashboard. Checking if we need to create workspace...")
+             # Check if there are existing workspaces
+             if page.locator("text=Existing Workspaces").count() > 0:
+                 # The dashboard lists workspaces but the links go to /admin/workspace/ID
+                 # We need to find the slug to navigate to /workspace/slug
+                 # Let's try to extract text from the list
+                 try:
+                     # Assuming the list item has the slug as text "/slug"
+                     slug_element = page.locator("li p.text-sm.text-gray-500").first
+                     slug_text = slug_element.inner_text() # e.g. "/marketing"
+                     slug = slug_text.replace("/", "").strip()
+                     print(f"Found existing workspace slug: {slug}")
+                     page.goto(f"http://localhost:3000/workspace/{slug}")
+                 except:
+                     print("Could not find existing workspace slug. Creating new one...")
+                     page.fill("input[placeholder='Workspace Name']", "Test Workspace")
+                     page.fill("input[placeholder='Slug (e.g., marketing)']", "test-workspace")
+                     page.click("button:has-text('Create')")
+                     page.wait_for_selector("text=Test Workspace", timeout=5000)
+                     page.goto("http://localhost:3000/workspace/test-workspace")
+             else:
+                 print("Creating workspace...")
+                 page.fill("input[placeholder='Workspace Name']", "Test Workspace")
+                 page.fill("input[placeholder='Slug (e.g., marketing)']", "test-workspace")
+                 page.click("button:has-text('Create')")
+                 page.wait_for_selector("text=Test Workspace", timeout=5000)
+                 page.goto("http://localhost:3000/workspace/test-workspace")
 
-        # Now we might be on /admin because we are a super admin and there are no workspaces?
-        if "/admin" in page.url or page.locator("text=Global Admin Dashboard").count() > 0:
-             print("On Admin Dashboard. Creating workspace...")
-             page.fill("input[placeholder='Workspace Name']", "Test Workspace")
-             page.fill("input[placeholder='Slug (e.g., marketing)']", "test-workspace")
-             page.click("button:has-text('Create')")
-
-             # Wait for workspace to appear in list
-             page.wait_for_selector("text=Test Workspace", timeout=5000)
-
-             # Navigate to it
-             print("Navigating to workspace...")
-             page.goto("http://localhost:3000/workspace/test-workspace")
-
+        # Now we should be on a workspace page with the sidebar
         # Wait for the sidebar to be visible
         try:
             page.wait_for_selector("text=Tuesday", timeout=20000)
             print("Sidebar loaded.")
         except:
             print("Sidebar not found or page took too long to load.")
-            page.screenshot(path="verification/error_state.png")
+            page.screenshot(path="verification/error_state_final.png")
             return
 
         # Check for the new button elements
