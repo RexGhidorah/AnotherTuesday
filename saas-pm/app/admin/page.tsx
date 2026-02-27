@@ -2,9 +2,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import AdminClientPage from "./client-page";
 import Link from "next/link";
-import { ArrowRight, Building2, ExternalLink, FolderKanban, Users, CheckSquare } from "lucide-react";
+import {
+  Users, ChevronRight, Folder, Database, HardDrive,
+  Clock, Globe, Plus
+} from "lucide-react";
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
@@ -13,6 +15,7 @@ export default async function AdminDashboard() {
     redirect("/");
   }
 
+  // Fetch real data
   const workspaces = await prisma.workspace.findMany({
     include: {
         _count: {
@@ -31,108 +34,194 @@ export default async function AdminDashboard() {
   const totalUsers = await prisma.user.count();
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <div className="mb-8 flex items-end justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="mt-2 text-gray-500">Manage your organization's workspaces and settings.</p>
-        </div>
+    <div className="space-y-6 animate-in fade-in duration-500">
+      <div className="mb-8">
+        <p className="text-slate-500">Gestiona los espacios de trabajo activos y el resumen del sistema.</p>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_300px]">
-        <div>
-          <AdminClientPage />
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2 space-y-6">
 
-          <div className="rounded-xl border bg-white shadow-sm overflow-hidden mt-8">
-            <div className="border-b bg-gray-50 px-6 py-4 flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-900">Active Workspaces</h2>
-              <span className="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded-full">{workspaces.length} Total</span>
+          {/* Tarjeta: Crear Workspace (Placeholder UI) */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/50">
+              <h3 className="text-lg font-semibold text-slate-900">Crear Nuevo Espacio</h3>
+              <p className="text-sm text-slate-500 mt-1">Añade un nuevo espacio de trabajo dedicado a tu organización.</p>
             </div>
-
-            {workspaces.length === 0 ? (
-                <div className="p-12 text-center text-gray-500">
-                    <Building2 className="mx-auto mb-3 h-12 w-12 text-gray-300" />
-                    <p>No workspaces found. Create your first one above.</p>
+            <div className="p-6 space-y-5">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1 w-full">
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">Nombre del Espacio</label>
+                  <input type="text" placeholder="Ej. Equipo de Marketing" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all placeholder:text-slate-400" />
                 </div>
-            ) : (
-                <div className="divide-y">
-                {workspaces.map((ws) => {
-                    const taskCount = ws.projects.reduce((acc, project) => acc + project._count.tasks, 0);
-
-                    return (
-                        <div key={ws.id} className="group flex flex-col sm:flex-row sm:items-center justify-between p-6 hover:bg-gray-50 transition-colors gap-4">
-                        <div className="flex items-start sm:items-center gap-4">
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 font-bold text-lg">
-                                {ws.name[0]}
-                            </div>
-                            <div>
-                                <h3 className="font-medium text-gray-900 text-lg">{ws.name}</h3>
-                                <div className="flex flex-wrap items-center gap-4 mt-1">
-                                    <div className="flex items-center gap-1 text-xs text-gray-500" title="Projects">
-                                        <FolderKanban size={14} />
-                                        <span>{ws._count.projects} Projects</span>
-                                    </div>
-                                    <div className="flex items-center gap-1 text-xs text-gray-500" title="Members">
-                                        <Users size={14} />
-                                        <span>{ws._count.members} Members</span>
-                                    </div>
-                                    <div className="flex items-center gap-1 text-xs text-gray-500" title="Tasks">
-                                        <CheckSquare size={14} />
-                                        <span>{taskCount} Tasks</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-3 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity self-end sm:self-center">
-                            <Link
-                                href={`/workspace/${ws.slug}`}
-                                className="flex items-center gap-1 text-sm text-gray-500 hover:text-indigo-600 px-3 py-1.5 rounded hover:bg-indigo-50 transition-colors"
-                                target="_blank"
-                            >
-                                <ExternalLink size={14} />
-                                Open
-                            </Link>
-                            <Link
-                                href={`/admin/workspace/${ws.id}`}
-                                className="flex items-center gap-1 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
-                            >
-                                Manage
-                                <ArrowRight size={14} />
-                            </Link>
-                        </div>
-                        </div>
-                    );
-                })}
+                <div className="flex-1 w-full">
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">URL Slug</label>
+                  <div className="flex rounded-xl shadow-sm border border-slate-200 bg-slate-50 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-200 focus-within:border-indigo-500 overflow-hidden transition-all">
+                    <span className="inline-flex items-center px-4 bg-slate-100 border-r border-slate-200 text-slate-500 text-sm">
+                      /workspace/
+                    </span>
+                    <input type="text" placeholder="marketing" className="flex-1 px-4 py-2.5 bg-transparent outline-none text-sm placeholder:text-slate-400" />
+                  </div>
                 </div>
-            )}
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 items-end pt-2 border-t border-slate-100">
+                <div className="w-full sm:w-1/3">
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <Users className="w-3.5 h-3.5 text-slate-400" /> Asientos (Límite)
+                  </label>
+                  <input type="number" defaultValue="10" min="1" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all" />
+                </div>
+                <div className="w-full sm:w-1/3">
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <HardDrive className="w-3.5 h-3.5 text-slate-400" /> Almacenamiento
+                  </label>
+                  <select className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all cursor-pointer">
+                    <option value="5">5 GB</option>
+                    <option value="10">10 GB</option>
+                    <option value="50">50 GB</option>
+                    <option value="100">100 GB</option>
+                    <option value="unlimited">Ilimitado</option>
+                  </select>
+                </div>
+                <button className="w-full sm:w-1/3 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl text-sm shadow-sm flex items-center justify-center gap-2 transition-colors">
+                  <Plus className="w-4 h-4" />
+                  Crear Espacio
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Tarjeta: Workspaces Activos */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <h3 className="text-lg font-semibold text-slate-900">Espacios Activos</h3>
+              <span className="px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-full ring-1 ring-indigo-600/10">{workspaces.length} Total</span>
+            </div>
+            <div className="divide-y divide-slate-100">
+              {workspaces.map(ws => (
+                <div
+                  key={ws.id}
+                  className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors group cursor-pointer"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-100 to-purple-100 border border-indigo-200 flex items-center justify-center text-indigo-700 font-bold text-xl shadow-inner group-hover:scale-105 transition-transform">
+                      {ws.name[0]}
+                    </div>
+                    <div>
+                      <h4 className="text-base font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors">{ws.name}</h4>
+                      <div className="flex items-center gap-4 mt-1">
+                        <span className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                          <Folder className="w-3.5 h-3.5" /> {ws._count.projects} Proyectos
+                        </span>
+                        <span className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                          <Users className="w-3.5 h-3.5" /> {ws._count.members} Miembros
+                        </span>
+                        <span className="flex items-center gap-1.5 text-xs text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-md">
+                          <Database className="w-3.5 h-3.5" /> Local
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <Link
+                    href={`/admin/workspace/${ws.id}`}
+                    className="p-2 text-slate-400 group-hover:text-indigo-600 group-hover:bg-indigo-50 rounded-lg transition-colors flex items-center gap-1"
+                  >
+                    Ver Detalles <ChevronRight className="w-5 h-5 inline" />
+                  </Link>
+                </div>
+              ))}
+              {workspaces.length === 0 && (
+                  <div className="p-8 text-center text-slate-500 text-sm">No hay espacios activos.</div>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Quick Stats / Sidebar Widgets */}
+        {/* Columna Derecha (Widgets) */}
         <div className="space-y-6">
-            <div className="rounded-xl border bg-white p-6 shadow-sm">
-                <h3 className="font-semibold text-gray-900">System Overview</h3>
-                <div className="mt-4 space-y-4">
-                    <div className="flex justify-between border-b pb-2">
-                        <span className="text-sm text-gray-500">Total Users</span>
-                        <span className="font-mono font-medium text-gray-900">
-                             {totalUsers}
-                        </span>
-                    </div>
-                    <div className="flex justify-between border-b pb-2">
-                        <span className="text-sm text-gray-500">Total Workspaces</span>
-                        <span className="font-mono font-medium text-gray-900">{workspaces.length}</span>
-                    </div>
-                </div>
-            </div>
 
-             <div className="rounded-xl border bg-indigo-50 p-6">
-                <h3 className="font-semibold text-indigo-900">Need Help?</h3>
-                <p className="mt-2 text-sm text-indigo-700">Check out our documentation for guides on managing your workspaces.</p>
-                <button className="mt-4 w-full rounded-lg bg-indigo-600 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">
-                    View Docs
-                </button>
+          {/* Resumen del Sistema + Audit Logs */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/50">
+              <h3 className="text-lg font-semibold text-slate-900">Resumen del Sistema</h3>
             </div>
+            <div className="p-6">
+              <div className="space-y-4 mb-6">
+                <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-slate-50">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
+                      <Users className="w-5 h-5" />
+                    </div>
+                    <span className="text-sm font-medium text-slate-600">Usuarios Totales</span>
+                  </div>
+                  <span className="text-xl font-bold text-slate-900">{totalUsers}</span>
+                </div>
+                <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-slate-50">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <span className="text-sm font-medium text-slate-600">Espacios Activos</span>
+                  </div>
+                  <span className="text-xl font-bold text-slate-900">{workspaces.length}</span>
+                </div>
+                <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-slate-50">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
+                      <HardDrive className="w-5 h-5" />
+                    </div>
+                    <span className="text-sm font-medium text-slate-600">Espacio Utilizado</span>
+                  </div>
+                  <span className="text-xl font-bold text-slate-900">-- <span className="text-sm text-slate-500 font-medium">/ 50GB</span></span>
+                </div>
+              </div>
+
+              {/* Audit Logs (Mock) */}
+              <div className="pt-5 border-t border-slate-100">
+                <div className="flex items-center justify-between mb-5">
+                  <h4 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-indigo-500" /> Actividad Reciente
+                  </h4>
+                  <button className="text-[10px] uppercase tracking-wider font-bold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-2 py-1.5 rounded transition-colors">
+                    Ver Logs
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex gap-3 relative">
+                    <div className="absolute top-2.5 left-[3px] bottom-[-16px] w-[2px] bg-slate-100"></div>
+                    <div className="w-2 h-2 mt-1.5 rounded-full bg-indigo-500 shrink-0 relative z-10 shadow-[0_0_0_3px_white]"></div>
+                    <div>
+                      <p className="text-xs text-slate-700 leading-relaxed">
+                        <strong>Noah Admin</strong> modificó el rol de <span className="font-medium text-indigo-600">Emma Watson</span>.
+                      </p>
+                      <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Hace 10 min</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3 relative">
+                    <div className="absolute top-2.5 left-[3px] bottom-[-16px] w-[2px] bg-slate-100"></div>
+                    <div className="w-2 h-2 mt-1.5 rounded-full bg-emerald-500 shrink-0 relative z-10 shadow-[0_0_0_3px_white]"></div>
+                    <div>
+                      <p className="text-xs text-slate-700 leading-relaxed">
+                        Se creó un nuevo workspace: <span className="font-medium text-emerald-600">Test Workspace</span>.
+                      </p>
+                      <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Ayer a las 14:30</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3 relative">
+                    <div className="w-2 h-2 mt-1.5 rounded-full bg-rose-500 shrink-0 relative z-10 shadow-[0_0_0_3px_white]"></div>
+                    <div>
+                      <p className="text-xs text-slate-700 leading-relaxed">
+                        <strong>Sistema</strong> bloqueó un inicio de sesión desde IP no reconocida.
+                      </p>
+                      <p className="text-[10px] text-slate-400 mt-0.5 font-medium">12 Oct 2025</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
