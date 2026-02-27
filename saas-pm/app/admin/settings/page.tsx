@@ -46,6 +46,13 @@ export default function SettingsPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <h2 className="text-lg font-semibold text-gray-700">SMTP Configuration</h2>
 
+          <div className="flex gap-2 text-sm">
+            <button type="button" onClick={() => setFormData({...formData, host: 'smtp.gmail.com', port: '587'})} className="rounded bg-gray-200 px-3 py-1 hover:bg-gray-300">Gmail</button>
+            <button type="button" onClick={() => setFormData({...formData, host: 'smtp.office365.com', port: '587'})} className="rounded bg-gray-200 px-3 py-1 hover:bg-gray-300">Outlook</button>
+            <button type="button" onClick={() => setFormData({...formData, host: 'smtp.mailgun.org', port: '587'})} className="rounded bg-gray-200 px-3 py-1 hover:bg-gray-300">Mailgun</button>
+            <button type="button" onClick={() => setFormData({...formData, host: 'smtp.sendgrid.net', port: '587'})} className="rounded bg-gray-200 px-3 py-1 hover:bg-gray-300">SendGrid</button>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700">Host</label>
             <input
