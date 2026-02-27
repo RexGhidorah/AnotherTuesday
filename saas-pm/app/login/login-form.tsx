@@ -5,6 +5,20 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, CheckCircle2, ChevronRight, LayoutTemplate, Briefcase, Mail } from 'lucide-react';
 
+const BrandLogo = () => (
+    <div className="flex items-center gap-2">
+      <div className="grid grid-cols-2 grid-rows-2 gap-[2px] w-7 h-7">
+        <div className="bg-rose-500 rounded-tl-sm w-full h-full"></div>
+        <div className="bg-amber-400 rounded-tr-sm w-full h-full"></div>
+        <div className="bg-emerald-500 rounded-bl-sm w-full h-full"></div>
+        <div className="bg-indigo-600 rounded-br-sm w-full h-full"></div>
+      </div>
+      <span className="text-3xl font-black tracking-tighter text-slate-900">
+        tuesday<span className="text-indigo-600">.</span>
+      </span>
+    </div>
+  );
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,21 +47,6 @@ export default function LoginPage() {
       alert("Invalid credentials");
     }
   };
-
-  // Logo de Tuesday (Inspirado en bloques de gestión visual)
-  const BrandLogo = () => (
-    <div className="flex items-center gap-2">
-      <div className="grid grid-cols-2 grid-rows-2 gap-[2px] w-7 h-7">
-        <div className="bg-rose-500 rounded-tl-sm w-full h-full"></div>
-        <div className="bg-amber-400 rounded-tr-sm w-full h-full"></div>
-        <div className="bg-emerald-500 rounded-bl-sm w-full h-full"></div>
-        <div className="bg-indigo-600 rounded-br-sm w-full h-full"></div>
-      </div>
-      <span className="text-3xl font-black tracking-tighter text-slate-900">
-        tuesday<span className="text-indigo-600">.</span>
-      </span>
-    </div>
-  );
 
   return (
     <div className="flex min-h-screen bg-white font-sans text-slate-900">
