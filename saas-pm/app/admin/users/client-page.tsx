@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { format } from "date-fns";
 import {
   Search, Filter, MoreHorizontal, ShieldCheck, ShieldAlert,
-  Key, Clock, LogOut, Save, UserCheck, Lock, Trash2,
-  Mail, ArrowLeft, Plus
+  Key, LogOut, Save, UserCheck, Lock, Trash2,
+  ArrowLeft, Plus
 } from "lucide-react";
 import { inviteUser, deleteUser, updateUserRole } from "@/app/actions/admin";
 
@@ -26,9 +25,11 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: Admin
   const [openUserMenu, setOpenUserMenu] = useState<string | null>(null);
   const [modalConfig, setModalConfig] = useState<{ type: 'role' | 'password' | 'suspend'; user: AdminUser } | null>(null);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleInvite = async (data: { email: string; role: string; name?: string }) => {
     const result = await inviteUser(data);
     if (result.success && result.user) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setUsers([result.user as any, ...users]);
     } else {
       alert(result.error || "Failed to invite user");
@@ -120,6 +121,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: Admin
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
                               <div className="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold shadow-sm group-hover:scale-105 transition-transform overflow-hidden">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                 {user.image ? <img src={user.image} alt={user.name || "User"} className="w-full h-full object-cover" /> : (user.name?.[0] || "U")}
                               </div>
                               <div>
@@ -222,6 +224,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: Admin
               </button>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-lg font-bold shadow-sm overflow-hidden">
+                   {/* eslint-disable-next-line @next/next/no-img-element */}
                    {selectedUser.image ? <img src={selectedUser.image} alt={selectedUser.name || "User"} className="w-full h-full object-cover" /> : (selectedUser.name?.[0] || "U")}
                 </div>
                 <div>
