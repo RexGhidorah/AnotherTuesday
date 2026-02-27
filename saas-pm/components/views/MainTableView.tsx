@@ -2,14 +2,14 @@
 
 import {
   ArrowRight,
-  CheckCircle2,
-  Clock,
-  User,
-  Flag,
-  Calendar,
-  MoreHorizontal
+  MoreHorizontal,
+  Plus
 } from "lucide-react";
-import { format } from "date-fns";
+import TextCell from "@/components/cells/TextCell";
+import StatusCell from "@/components/cells/StatusCell";
+import PriorityCell from "@/components/cells/PriorityCell";
+import DateCell from "@/components/cells/DateCell";
+import UserCell from "@/components/cells/UserCell";
 
 type Task = {
   id: string;
@@ -24,77 +24,92 @@ type Task = {
 type MainTableViewProps = {
   tasks: Task[];
   onUpdateTask: (task: Task) => void;
+  onNewItem?: () => void;
 };
 
-const statusColors: Record<string, string> = {
-  "TODO": "bg-gray-100 text-gray-700",
-  "IN_PROGRESS": "bg-blue-100 text-blue-700",
-  "REVIEW": "bg-purple-100 text-purple-700",
-  "DONE": "bg-green-100 text-green-700",
-};
+export default function MainTableView({ tasks, onUpdateTask, onNewItem }: MainTableViewProps) {
 
-const priorityColors: Record<string, string> = {
-  "LOW": "text-gray-500",
-  "MEDIUM": "text-yellow-600",
-  "HIGH": "text-orange-600",
-  "URGENT": "text-red-600",
-};
+  const handleCellUpdate = (task: Task, field: string, value: any) => {
+    onUpdateTask({ ...task, [field]: value });
+  };
 
-export default function MainTableView({ tasks, onUpdateTask }: MainTableViewProps) {
   return (
     <div className="flex h-full flex-col bg-white">
       {/* Table Header */}
-      <div className="grid grid-cols-[30px_minmax(200px,1fr)_150px_150px_150px_150px_40px] gap-2 border-b bg-gray-50 px-4 py-3 text-xs font-semibold uppercase text-gray-500">
-        <div className="flex items-center justify-center">
+      <div className="grid grid-cols-[40px_minmax(250px,2fr)_140px_140px_160px_180px_50px] divide-x divide-gray-200 border-b border-gray-200 bg-gray-50 text-xs font-semibold text-gray-500">
+        <div className="flex items-center justify-center py-2">
           <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
         </div>
-        <div>Item</div>
-        <div>Status</div>
-        <div>Priority</div>
-        <div>Due Date</div>
-        <div>Person</div>
-        <div></div>
+        <div className="flex items-center px-3 py-2">Item</div>
+        <div className="flex items-center px-3 py-2">Status</div>
+        <div className="flex items-center px-3 py-2">Priority</div>
+        <div className="flex items-center px-3 py-2">Due Date</div>
+        <div className="flex items-center px-3 py-2">Person</div>
+        <div className="flex items-center justify-center py-2 hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600">
+            <Plus size={16} />
+        </div>
       </div>
 
       {/* Table Body */}
       <div className="flex-1 overflow-auto">
+        {tasks.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-10 text-gray-400">
+                <p>No tasks found. Create one to get started.</p>
+            </div>
+        )}
         {tasks.map((task) => (
           <div
             key={task.id}
-            className="group grid grid-cols-[30px_minmax(200px,1fr)_150px_150px_150px_150px_40px] items-center gap-2 border-b px-4 py-3 text-sm hover:bg-gray-50 transition-colors"
+            className="group grid grid-cols-[40px_minmax(250px,2fr)_140px_140px_160px_180px_50px] items-stretch divide-x divide-gray-100 border-b border-gray-100 text-sm hover:bg-blue-50/30 transition-colors"
           >
+            {/* Checkbox */}
             <div className="flex items-center justify-center">
               <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
 
-            <div className="font-medium text-gray-900 truncate">
-              {task.title}
+            {/* Title Cell */}
+            <div className="border-r-0">
+               <TextCell
+                 value={task.title}
+                 onChange={(val) => handleCellUpdate(task, "title", val)}
+                 className="font-medium text-gray-900"
+               />
             </div>
 
-            <div>
-              <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[task.status] || "bg-gray-100 text-gray-800"}`}>
-                {task.status.replace("_", " ")}
-              </span>
+            {/* Status Cell */}
+            <div className="border-r-0">
+               <StatusCell
+                 value={task.status}
+                 onChange={(val) => handleCellUpdate(task, "status", val)}
+               />
             </div>
 
-            <div className={`flex items-center gap-1.5 ${priorityColors[task.priority] || "text-gray-500"}`}>
-              <Flag size={14} />
-              <span className="capitalize">{task.priority.toLowerCase()}</span>
+             {/* Priority Cell */}
+             <div className="border-r-0">
+               <PriorityCell
+                 value={task.priority}
+                 onChange={(val) => handleCellUpdate(task, "priority", val)}
+               />
             </div>
 
-            <div className="text-gray-500 flex items-center gap-1.5">
-              <Calendar size={14} />
-              {task.dueDate ? format(new Date(task.dueDate), "MMM d, yyyy") : "-"}
+            {/* Date Cell */}
+            <div className="border-r-0">
+               <DateCell
+                 value={task.dueDate || null}
+                 onChange={(val) => handleCellUpdate(task, "dueDate", val)}
+               />
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600">
-                 {task.assignee ? task.assignee.name?.[0] : <User size={12} />}
-              </div>
-              <span className="text-gray-600 truncate text-xs">{task.assignee?.name || "Unassigned"}</span>
+             {/* User Cell */}
+             <div className="border-r-0">
+               <UserCell
+                 value={task.assignee}
+                 onChange={(val) => handleCellUpdate(task, "assignee", val)}
+               />
             </div>
 
-            <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+            {/* Actions */}
+            <div className="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
               <button className="text-gray-400 hover:text-gray-600">
                 <MoreHorizontal size={16} />
               </button>
@@ -103,9 +118,12 @@ export default function MainTableView({ tasks, onUpdateTask }: MainTableViewProp
         ))}
 
         {/* Add New Row */}
-        <div className="flex cursor-pointer items-center gap-2 border-b border-dashed px-4 py-3 text-sm text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors">
-            <div className="w-[30px] flex justify-center"><ArrowRight size={14} /></div>
-            <span>+ Add Task</span>
+        <div
+            onClick={onNewItem}
+            className="flex cursor-pointer items-center gap-2 border-b border-dashed border-gray-200 px-4 py-3 text-sm text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors"
+        >
+            <div className="w-[40px] flex justify-center"><Plus size={14} /></div>
+            <span>Add Task</span>
         </div>
       </div>
     </div>
