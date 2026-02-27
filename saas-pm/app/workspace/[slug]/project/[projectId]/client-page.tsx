@@ -46,8 +46,52 @@ export default function ProjectClientPage({ tasks: initialTasks, projectId }: { 
   };
 
   const handleNewItem = async () => {
-      // Placeholder for new item creation logic
-      console.log("Create new item");
+    // Optimistic creation
+    const tempId = `temp-${Date.now()}`;
+    const newTask: Task = {
+      id: tempId,
+      title: "",
+      status: "TODO",
+      priority: "MEDIUM",
+      projectId,
+      startDate: null,
+      endDate: null,
+      dueDate: null,
+      assigneeId: null,
+      assignee: null
+    };
+
+    setTasks(prev => [...prev, newTask]);
+
+    try {
+      const res = await fetch("/api/tasks", {
+        method: "POST",
+        body: JSON.stringify({
+          title: "New Task",
+          projectId: projectId,
+          status: "TODO",
+          priority: "MEDIUM"
+        }),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      if (!res.ok) throw new Error("Failed to create");
+
+      const createdTask = await res.json();
+
+      // Replace temp task with real one
+      setTasks(prev => prev.map(t => t.id === tempId ? {
+          ...createdTask,
+          startDate: createdTask.startDate ? new Date(createdTask.startDate) : null,
+          endDate: createdTask.endDate ? new Date(createdTask.endDate) : null,
+          dueDate: createdTask.dueDate ? new Date(createdTask.dueDate) : null,
+      } : t));
+
+    } catch (e) {
+      console.error("Failed to create task", e);
+      // Remove temp task if failed
+      setTasks(prev => prev.filter(t => t.id !== tempId));
+    }
   }
 
   return (
@@ -59,7 +103,7 @@ export default function ProjectClientPage({ tasks: initialTasks, projectId }: { 
       />
 
       <div className="flex-1 overflow-hidden">
-        {view === "MAIN_TABLE" && <MainTableView tasks={tasks} onUpdateTask={handleUpdateTask} />}
+        {view === "MAIN_TABLE" && <MainTableView tasks={tasks} onUpdateTask={handleUpdateTask} onNewItem={handleNewItem} />}
         {view === "KANBAN" && <div className="h-full overflow-auto p-6"><KanbanBoard tasks={tasks} onUpdateTask={handleUpdateTask} /></div>}
         {view === "CALENDAR" && <div className="h-full overflow-auto p-6"><CalendarView tasks={tasks} /></div>}
         {view === "GANTT" && <div className="h-full overflow-auto p-6"><GanttChart tasks={tasks} /></div>}
