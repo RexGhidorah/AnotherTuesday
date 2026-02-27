@@ -4,6 +4,8 @@ import { useState } from "react";
 import KanbanBoard from "@/components/views/KanbanBoard";
 import CalendarView from "@/components/views/CalendarView";
 import GanttChart from "@/components/views/GanttChart";
+import MainTableView from "@/components/views/MainTableView";
+import TopBar from "@/components/TopBar";
 
 // Define strict types
 type Task = {
@@ -18,7 +20,7 @@ type Task = {
 };
 
 export default function ProjectClientPage({ tasks: initialTasks, projectId }: { tasks: any[], projectId: string }) {
-  const [view, setView] = useState("KANBAN");
+  const [view, setView] = useState("MAIN_TABLE");
   // Normalize dates from JSON (strings) to Date objects
   const [tasks, setTasks] = useState<Task[]>(initialTasks.map(t => ({
       ...t,
@@ -43,29 +45,24 @@ export default function ProjectClientPage({ tasks: initialTasks, projectId }: { 
     }
   };
 
-  return (
-    <div className="flex h-screen flex-col">
-      <div className="flex items-center justify-between border-b bg-white px-6 py-4">
-        <h1 className="text-2xl font-bold">Project Tasks</h1>
-        <div className="flex gap-2 rounded-lg bg-gray-100 p-1">
-          {["KANBAN", "CALENDAR", "GANTT"].map((v) => (
-            <button
-              key={v}
-              onClick={() => setView(v)}
-              className={`rounded px-4 py-2 text-sm font-medium transition ${
-                view === v ? "bg-white shadow" : "text-gray-500 hover:text-gray-900"
-              }`}
-            >
-              {v.charAt(0) + v.slice(1).toLowerCase()}
-            </button>
-          ))}
-        </div>
-      </div>
+  const handleNewItem = async () => {
+      // Placeholder for new item creation logic
+      console.log("Create new item");
+  }
 
-      <div className="flex-1 overflow-auto bg-gray-50 p-6">
-        {view === "KANBAN" && <KanbanBoard tasks={tasks} onUpdateTask={handleUpdateTask} />}
-        {view === "CALENDAR" && <CalendarView tasks={tasks} />}
-        {view === "GANTT" && <GanttChart tasks={tasks} />}
+  return (
+    <div className="flex h-screen flex-col overflow-hidden bg-gray-50">
+      <TopBar
+        currentView={view}
+        onViewChange={setView}
+        onNewItem={handleNewItem}
+      />
+
+      <div className="flex-1 overflow-hidden">
+        {view === "MAIN_TABLE" && <MainTableView tasks={tasks} onUpdateTask={handleUpdateTask} />}
+        {view === "KANBAN" && <div className="h-full overflow-auto p-6"><KanbanBoard tasks={tasks} onUpdateTask={handleUpdateTask} /></div>}
+        {view === "CALENDAR" && <div className="h-full overflow-auto p-6"><CalendarView tasks={tasks} /></div>}
+        {view === "GANTT" && <div className="h-full overflow-auto p-6"><GanttChart tasks={tasks} /></div>}
       </div>
     </div>
   );
