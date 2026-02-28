@@ -39,5 +39,13 @@ export async function POST(req: Request) {
     create: { key: "SMTP_SETTINGS", value: JSON.stringify(settings) },
   });
 
+  await prisma.activityLog.create({
+      data: {
+        action: "UPDATED_SMTP_SETTINGS",
+        details: `Actualizó la configuración SMTP`,
+        userId: session.user.id,
+      }
+  });
+
   return NextResponse.json({ success: true });
 }

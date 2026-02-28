@@ -31,6 +31,14 @@ export async function inviteUser(data: { email: string; role: string; name?: str
       },
     });
 
+    await prisma.activityLog.create({
+      data: {
+        action: "INVITED_USER",
+        details: `Invitó al usuario ${newUser.email} con rol ${newUser.role}`,
+        userId: session.user.id,
+      }
+    });
+
     revalidatePath("/admin/users");
     return { success: true, user: newUser };
   } catch (error) {
@@ -46,14 +54,57 @@ export async function deleteUser(userId: string) {
   }
 
   try {
+    const userToDelete = await prisma.user.findUnique({ where: { id: userId }});
+    if (!userToDelete) return { error: "User not found" };
+
     await prisma.user.delete({
       where: { id: userId },
     });
+
+    await prisma.activityLog.create({
+      data: {
+        action: "DELETED_USER",
+        details: `Eliminó al usuario ${userToDelete.email}`,
+        userId: session.user.id,
+      }
+    });
+
     revalidatePath("/admin/users");
     return { success: true };
   } catch (error) {
     console.error("Failed to delete user:", error);
     return { error: "Failed to delete user." };
+  }
+}
+
+export async function deleteWorkspace(workspaceId: string) {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "SUPER_ADMIN") {
+    return { error: "Unauthorized" };
+  }
+
+  try {
+    const workspace = await prisma.workspace.findUnique({ where: { id: workspaceId } });
+    if (!workspace) return { error: "Workspace not found" };
+
+    await prisma.workspace.delete({
+      where: { id: workspaceId },
+    });
+
+    // Log the action
+    await prisma.activityLog.create({
+      data: {
+        action: "DELETED_WORKSPACE",
+        details: `Eliminó el workspace ${workspace.name}`,
+        userId: session.user.id,
+      }
+    });
+
+    revalidatePath("/admin");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete workspace:", error);
+    return { error: "Failed to delete workspace." };
   }
 }
 
@@ -64,10 +115,19 @@ export async function updateUserRole(userId: string, newRole: string) {
   }
 
   try {
-    await prisma.user.update({
+    const user = await prisma.user.update({
       where: { id: userId },
       data: { role: newRole },
     });
+
+    await prisma.activityLog.create({
+      data: {
+        action: "UPDATED_USER_ROLE",
+        details: `Actualizó el rol de ${user.email} a ${newRole}`,
+        userId: session.user.id,
+      }
+    });
+
     revalidatePath("/admin/users");
     return { success: true };
   } catch (error) {

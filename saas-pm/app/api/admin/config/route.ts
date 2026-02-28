@@ -37,5 +37,13 @@ export async function POST(req: Request) {
     create: { key, value: JSON.stringify(value) },
   });
 
+  await prisma.activityLog.create({
+      data: {
+        action: "UPDATED_SYSTEM_CONFIG",
+        details: `Actualizó la configuración: ${key}`,
+        userId: session.user.id,
+      }
+  });
+
   return NextResponse.json({ success: true });
 }

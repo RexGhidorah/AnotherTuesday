@@ -5,10 +5,11 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import {
   ArrowLeft, Globe, ExternalLink, Activity, HardDrive,
-  Users, Plus, Trash2, Lock
+  Users, Plus, Trash2
 } from "lucide-react";
 import { format } from "date-fns";
 import WorkspaceStorageWidget from "@/components/admin/WorkspaceStorageWidget";
+import DeleteWorkspaceWidget from "@/components/admin/DeleteWorkspaceWidget";
 
 export default async function WorkspaceAdminPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
@@ -144,22 +145,7 @@ export default async function WorkspaceAdminPage({ params }: { params: Promise<{
             </div>
 
             {/* Danger Zone */}
-            <div className="bg-white rounded-2xl border border-red-200 shadow-sm overflow-hidden">
-                <div className="px-6 py-5 border-b border-red-100 bg-red-50/50">
-                    <h3 className="text-lg font-semibold text-red-900 flex items-center gap-2">
-                    <Lock className="w-5 h-5" /> Zona de Peligro
-                    </h3>
-                </div>
-                <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                    <h4 className="text-sm font-semibold text-slate-900">Eliminar Workspace Permanentemente</h4>
-                    <p className="text-sm text-slate-500 mt-1 max-w-md">Esta acción es irreversible. Se eliminarán todos los proyectos, tareas y archivos.</p>
-                    </div>
-                    <button className="px-4 py-2.5 bg-white text-red-600 border border-red-200 hover:bg-red-50 hover:border-red-300 font-medium rounded-xl text-sm transition-colors flex items-center gap-2 whitespace-nowrap">
-                    <Trash2 className="w-4 h-4" /> Eliminar Espacio
-                    </button>
-                </div>
-            </div>
+            <DeleteWorkspaceWidget workspaceId={workspace.id} workspaceName={workspace.name} />
             </div>
 
             <div className="space-y-6">
