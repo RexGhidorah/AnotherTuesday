@@ -9,12 +9,12 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function inviteUser(data: { email: string; role: string; name?: string }) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email || session.user.role !== "SUPER_ADMIN") {
+  if (!session?.user?.id || session.user.role !== "SUPER_ADMIN") {
     return { error: "Unauthorized" };
   }
 
   try {
-    const dbUser = await prisma.user.findUnique({ where: { email: session.user.email } });
+    const dbUser = await prisma.user.findUnique({ where: { id: session.user.id } });
     if (!dbUser) return { error: "Admin user not found" };
 
     const existingUser = await prisma.user.findUnique({
@@ -52,12 +52,12 @@ export async function inviteUser(data: { email: string; role: string; name?: str
 
 export async function deleteUser(userId: string) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email || session.user.role !== "SUPER_ADMIN") {
+  if (!session?.user?.id || session.user.role !== "SUPER_ADMIN") {
     return { error: "Unauthorized" };
   }
 
   try {
-    const dbUser = await prisma.user.findUnique({ where: { email: session.user.email } });
+    const dbUser = await prisma.user.findUnique({ where: { id: session.user.id } });
     if (!dbUser) return { error: "Admin user not found" };
 
     const userToDelete = await prisma.user.findUnique({ where: { id: userId }});
@@ -85,12 +85,12 @@ export async function deleteUser(userId: string) {
 
 export async function deleteWorkspace(workspaceId: string) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email || session.user.role !== "SUPER_ADMIN") {
+  if (!session?.user?.id || session.user.role !== "SUPER_ADMIN") {
     return { error: "Unauthorized" };
   }
 
   try {
-    const dbUser = await prisma.user.findUnique({ where: { email: session.user.email } });
+    const dbUser = await prisma.user.findUnique({ where: { id: session.user.id } });
     if (!dbUser) return { error: "Admin user not found in DB" };
 
     const workspace = await prisma.workspace.findUnique({ where: { id: workspaceId } });
@@ -120,12 +120,12 @@ export async function deleteWorkspace(workspaceId: string) {
 
 export async function updateUserRole(userId: string, newRole: string) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email || session.user.role !== "SUPER_ADMIN") {
+  if (!session?.user?.id || session.user.role !== "SUPER_ADMIN") {
     return { error: "Unauthorized" };
   }
 
   try {
-    const dbUser = await prisma.user.findUnique({ where: { email: session.user.email } });
+    const dbUser = await prisma.user.findUnique({ where: { id: session.user.id } });
     if (!dbUser) return { error: "Admin user not found" };
 
     const user = await prisma.user.update({

@@ -23,11 +23,11 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email || session.user.role !== "SUPER_ADMIN") {
+  if (!session?.user?.id || session.user.role !== "SUPER_ADMIN") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const dbUser = await prisma.user.findUnique({ where: { email: session.user.email } });
+  const dbUser = await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!dbUser) return NextResponse.json({ error: "Admin user not found" }, { status: 404 });
 
   const { key, value } = await req.json();
