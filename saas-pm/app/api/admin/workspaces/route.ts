@@ -6,13 +6,16 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
 
-  if (!session || session.user.role !== "SUPER_ADMIN") {
+  if (!session?.user?.email || session.user.role !== "SUPER_ADMIN") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { name, slug } = await req.json();
 
   try {
+    const dbUser = await prisma.user.findUnique({ where: { email: session.user.email } });
+    if (!dbUser) return NextResponse.json({ error: "Admin user not found" }, { status: 404 });
+
     const workspace = await prisma.workspace.create({
       data: {
         name,
@@ -24,7 +27,7 @@ export async function POST(req: Request) {
       data: {
         action: "CREATED_WORKSPACE",
         details: `Creó el workspace ${workspace.name}`,
-        userId: session.user.id,
+        userId: dbUser.id,
       }
     });
 

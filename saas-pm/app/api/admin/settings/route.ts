@@ -18,9 +18,12 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== "SUPER_ADMIN") {
+  if (!session?.user?.email || session.user.role !== "SUPER_ADMIN") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const dbUser = await prisma.user.findUnique({ where: { email: session.user.email } });
+  if (!dbUser) return NextResponse.json({ error: "Admin user not found" }, { status: 404 });
 
   const { host, port, user, pass, from } = await req.json();
 
@@ -43,7 +46,7 @@ export async function POST(req: Request) {
       data: {
         action: "UPDATED_SMTP_SETTINGS",
         details: `Actualizó la configuración SMTP`,
-        userId: session.user.id,
+        userId: dbUser.id,
       }
   });
 
