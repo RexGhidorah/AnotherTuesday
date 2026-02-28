@@ -87,17 +87,17 @@ export async function deleteWorkspace(workspaceId: string) {
     const workspace = await prisma.workspace.findUnique({ where: { id: workspaceId } });
     if (!workspace) return { error: "Workspace not found" };
 
-    await prisma.workspace.delete({
-      where: { id: workspaceId },
-    });
-
-    // Log the action
+    // Log the action BEFORE deleting to avoid SQLite cascade foreign key lock issues
     await prisma.activityLog.create({
       data: {
         action: "DELETED_WORKSPACE",
         details: `Eliminó el workspace ${workspace.name}`,
         userId: session.user.id,
       }
+    });
+
+    await prisma.workspace.delete({
+      where: { id: workspaceId },
     });
 
     revalidatePath("/admin");
