@@ -20,6 +20,14 @@ export async function POST(req: Request) {
       },
     });
 
+    await prisma.activityLog.create({
+      data: {
+        action: "CREATED_WORKSPACE",
+        details: `Creó el workspace ${workspace.name}`,
+        userId: session.user.id,
+      }
+    });
+
     return NextResponse.json(workspace);
   } catch (error) {
     console.error(error);
