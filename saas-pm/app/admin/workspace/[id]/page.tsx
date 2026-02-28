@@ -7,8 +7,8 @@ import {
   ArrowLeft, Globe, ExternalLink, Activity, HardDrive,
   Users, Plus, Trash2, Lock
 } from "lucide-react";
-import InviteUserForm from "./invite-user-form"; // We'll keep this but maybe hide it in a modal or redesign later. For now, we'll implement the UI.
 import { format } from "date-fns";
+import WorkspaceStorageWidget from "@/components/admin/WorkspaceStorageWidget";
 
 export default async function WorkspaceAdminPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
@@ -76,23 +76,7 @@ export default async function WorkspaceAdminPage({ params }: { params: Promise<{
                 </h3>
 
                 <div className="space-y-8">
-                <div>
-                    <div className="flex justify-between text-sm mb-3 items-center">
-                    <span className="font-semibold text-slate-700 flex items-center gap-2">
-                        <HardDrive className="w-4 h-4 text-slate-400"/> Almacenamiento SSD
-                    </span>
-                    <div className="flex items-center gap-3">
-                        <span className="text-slate-600 font-medium">0.5 GB <span className="text-slate-400 font-normal">/ 5.0 GB</span></span>
-                        <button className="text-[10px] uppercase tracking-wider font-bold text-indigo-600 hover:text-indigo-700 px-2 py-1 bg-indigo-50 hover:bg-indigo-100 rounded border border-indigo-200 transition-colors shadow-sm">
-                        Modificar Límite
-                        </button>
-                    </div>
-                    </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2.5 mb-2 overflow-hidden">
-                    <div className="bg-indigo-500 h-2.5 rounded-full" style={{ width: '10%' }}></div>
-                    </div>
-                    <p className="text-xs text-slate-500">El espacio incluye archivos subidos, adjuntos en tareas y documentos de pizarra.</p>
-                </div>
+                <WorkspaceStorageWidget workspaceId={workspace.id} />
 
                 <div>
                     <div className="flex justify-between text-sm mb-3 items-center">
