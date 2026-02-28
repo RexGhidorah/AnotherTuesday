@@ -4,10 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutGrid,
-  Calendar,
   Settings,
   Users,
-  Star,
   ChevronDown,
   ChevronRight,
   Plus,
@@ -60,13 +58,14 @@ export default function Sidebar({ workspaces, currentWorkspaceSlug }: SidebarPro
       <div className="flex-1 overflow-y-auto px-3">
         {/* Workspace Section */}
         <div className="mb-6">
-          <div
-            className="mb-2 flex cursor-pointer items-center justify-between px-3 text-xs font-bold uppercase text-gray-500 hover:text-gray-900"
+          <button
+            className="mb-2 flex w-full cursor-pointer items-center justify-between rounded-sm px-3 text-xs font-bold uppercase text-gray-500 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
             onClick={() => setIsWorkspaceOpen(!isWorkspaceOpen)}
+            aria-expanded={isWorkspaceOpen}
           >
             <span>Workspace</span>
             {isWorkspaceOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-          </div>
+          </button>
 
           {isWorkspaceOpen && (
             <div className="space-y-1">
@@ -143,13 +142,14 @@ export default function Sidebar({ workspaces, currentWorkspaceSlug }: SidebarPro
 
         {/* Favorites */}
         <div className="mb-6">
-          <div
-            className="mb-2 flex cursor-pointer items-center justify-between px-3 text-xs font-bold uppercase text-gray-500 hover:text-gray-900"
+          <button
+            className="mb-2 flex w-full cursor-pointer items-center justify-between rounded-sm px-3 text-xs font-bold uppercase text-gray-500 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
             onClick={() => setIsFavoritesOpen(!isFavoritesOpen)}
+            aria-expanded={isFavoritesOpen}
           >
             <span>Favorites</span>
             {isFavoritesOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-          </div>
+          </button>
 
           {isFavoritesOpen && (
             <div className="space-y-1">
@@ -176,16 +176,19 @@ export default function Sidebar({ workspaces, currentWorkspaceSlug }: SidebarPro
 
       {/* User Footer */}
       <div className="border-t p-4">
-        <div className="flex items-center gap-3 rounded-lg p-2 hover:bg-gray-100 cursor-pointer transition-colors">
-          <div className="h-9 w-9 overflow-hidden rounded-full bg-indigo-100 border border-indigo-200">
-             <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah`} alt="User" />
+        <button
+          className="flex w-full cursor-pointer items-center gap-3 rounded-lg p-2 text-left transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+          aria-label="User profile and settings"
+        >
+          <div className="h-9 w-9 overflow-hidden rounded-full border border-indigo-200 bg-indigo-100">
+             <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah`} alt="User avatar" />
           </div>
           <div className="flex-1 overflow-hidden">
             <p className="truncate text-sm font-medium text-gray-900">Sarah Connor</p>
             <p className="truncate text-xs text-gray-500">Engineering Lead</p>
           </div>
-          <Settings size={16} className="text-gray-400" />
-        </div>
+          <Settings size={16} className="text-gray-400" aria-hidden="true" />
+        </button>
       </div>
     </aside>
   );
