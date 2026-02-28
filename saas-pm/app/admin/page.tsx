@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import CreateWorkspaceWidget from "@/components/admin/CreateWorkspaceWidget";
 import GlobalStorageWidget from "@/components/admin/GlobalStorageWidget";
+import RecentActivityWidget from "@/components/admin/RecentActivityWidget";
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
@@ -123,49 +124,8 @@ export default async function AdminDashboard() {
                 <GlobalStorageWidget />
               </div>
 
-              {/* Audit Logs (Mock) */}
-              <div className="pt-5 border-t border-slate-100">
-                <div className="flex items-center justify-between mb-5">
-                  <h4 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-indigo-500" /> Actividad Reciente
-                  </h4>
-                  <button className="text-[10px] uppercase tracking-wider font-bold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-2 py-1.5 rounded transition-colors">
-                    Ver Logs
-                  </button>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex gap-3 relative">
-                    <div className="absolute top-2.5 left-[3px] bottom-[-16px] w-[2px] bg-slate-100"></div>
-                    <div className="w-2 h-2 mt-1.5 rounded-full bg-indigo-500 shrink-0 relative z-10 shadow-[0_0_0_3px_white]"></div>
-                    <div>
-                      <p className="text-xs text-slate-700 leading-relaxed">
-                        <strong>Noah Admin</strong> modificó el rol de <span className="font-medium text-indigo-600">Emma Watson</span>.
-                      </p>
-                      <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Hace 10 min</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3 relative">
-                    <div className="absolute top-2.5 left-[3px] bottom-[-16px] w-[2px] bg-slate-100"></div>
-                    <div className="w-2 h-2 mt-1.5 rounded-full bg-emerald-500 shrink-0 relative z-10 shadow-[0_0_0_3px_white]"></div>
-                    <div>
-                      <p className="text-xs text-slate-700 leading-relaxed">
-                        Se creó un nuevo workspace: <span className="font-medium text-emerald-600">Test Workspace</span>.
-                      </p>
-                      <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Ayer a las 14:30</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3 relative">
-                    <div className="w-2 h-2 mt-1.5 rounded-full bg-rose-500 shrink-0 relative z-10 shadow-[0_0_0_3px_white]"></div>
-                    <div>
-                      <p className="text-xs text-slate-700 leading-relaxed">
-                        <strong>Sistema</strong> bloqueó un inicio de sesión desde IP no reconocida.
-                      </p>
-                      <p className="text-[10px] text-slate-400 mt-0.5 font-medium">12 Oct 2025</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {/* Audit Logs */}
+              <RecentActivityWidget />
             </div>
           </div>
         </div>
