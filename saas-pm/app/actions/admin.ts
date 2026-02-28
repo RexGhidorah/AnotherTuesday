@@ -96,18 +96,19 @@ export async function deleteWorkspace(workspaceId: string) {
     const workspace = await prisma.workspace.findUnique({ where: { id: workspaceId } });
     if (!workspace) return { error: "Workspace not found" };
 
-    // Log the action BEFORE deleting to avoid SQLite cascade foreign key lock issues
-    await prisma.activityLog.create({
-      data: {
-        action: "DELETED_WORKSPACE",
-        details: `Eliminó el workspace ${workspace.name}`,
-        userId: dbUser.id,
-      }
-    });
-
-    await prisma.workspace.delete({
-      where: { id: workspaceId },
-    });
+    // Use a transaction to ensure atomicity and avoid SQLite state/lock issues during cascading deletes
+    await prisma.$transaction([
+      prisma.activityLog.create({
+        data: {
+          action: "DELETED_WORKSPACE",
+          details: `Eliminó el workspace ${workspace.name}`,
+          userId: dbUser.id,
+        }
+      }),
+      prisma.workspace.delete({
+        where: { id: workspaceId },
+      })
+    ]);
 
     revalidatePath("/admin");
     return { success: true };

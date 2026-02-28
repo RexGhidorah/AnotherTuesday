@@ -20,6 +20,12 @@ export async function POST(req: Request) {
       data: {
         name,
         slug,
+        members: {
+          create: {
+            userId: dbUser.id,
+            role: "ADMIN",
+          }
+        }
       },
     });
 
