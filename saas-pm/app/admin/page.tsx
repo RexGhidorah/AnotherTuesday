@@ -8,6 +8,7 @@ import {
   Clock, Globe
 } from "lucide-react";
 import CreateWorkspaceWidget from "@/components/admin/CreateWorkspaceWidget";
+import GlobalStorageWidget from "@/components/admin/GlobalStorageWidget";
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
@@ -119,15 +120,7 @@ export default async function AdminDashboard() {
                   </div>
                   <span className="text-xl font-bold text-slate-900">{workspaces.length}</span>
                 </div>
-                <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-slate-50">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
-                      <HardDrive className="w-5 h-5" />
-                    </div>
-                    <span className="text-sm font-medium text-slate-600">Espacio Utilizado</span>
-                  </div>
-                  <span className="text-xl font-bold text-slate-900">-- <span className="text-sm text-slate-500 font-medium">/ 50GB</span></span>
-                </div>
+                <GlobalStorageWidget />
               </div>
 
               {/* Audit Logs (Mock) */}
