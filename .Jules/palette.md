@@ -1,0 +1,3 @@
+## 2023-10-27 - Icon-only buttons lack ARIA labels and focus states
+**Learning:** Found a pattern in `MainTableView.tsx` where icon-only action buttons (like "More options" and "Add task") lack `aria-label` attributes and keyboard focus indicators, making them completely inaccessible to screen reader and keyboard users. Also, `div` elements are sometimes used for interactive controls.
+**Action:** When adding or reviewing icon-only buttons, always enforce `aria-label` for screen readers and `focus-visible` styles for keyboard navigation. Convert interactive `div` elements to semantic `<button>` elements.
