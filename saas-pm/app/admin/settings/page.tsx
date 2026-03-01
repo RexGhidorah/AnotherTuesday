@@ -21,7 +21,7 @@ export default function SettingsPage() {
       });
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };

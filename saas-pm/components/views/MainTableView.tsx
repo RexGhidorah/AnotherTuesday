@@ -44,9 +44,12 @@ export default function MainTableView({ tasks, onUpdateTask, onNewItem }: MainTa
         <div className="flex items-center px-3 py-2">Priority</div>
         <div className="flex items-center px-3 py-2">Due Date</div>
         <div className="flex items-center px-3 py-2">Person</div>
-        <div className="flex items-center justify-center py-2 hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600">
+        <button
+          className="flex items-center justify-center py-2 hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
+          aria-label="Add column"
+        >
             <Plus size={16} />
-        </div>
+        </button>
       </div>
 
       {/* Table Body */}
@@ -109,7 +112,10 @@ export default function MainTableView({ tasks, onUpdateTask, onNewItem }: MainTa
 
             {/* Actions */}
             <div className="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <button className="text-gray-400 hover:text-gray-600">
+              <button
+                className="text-gray-400 hover:text-gray-600 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
+                aria-label="More actions"
+              >
                 <MoreHorizontal size={16} />
               </button>
             </div>
@@ -117,13 +123,14 @@ export default function MainTableView({ tasks, onUpdateTask, onNewItem }: MainTa
         ))}
 
         {/* Add New Row */}
-        <div
+        <button
             onClick={onNewItem}
-            className="flex cursor-pointer items-center gap-2 border-b border-dashed border-gray-200 px-4 py-3 text-sm text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors"
+            className="w-full flex cursor-pointer items-center gap-2 border-b border-dashed border-gray-200 px-4 py-3 text-sm text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:bg-gray-50"
+            aria-label="Add Task"
         >
             <div className="w-[40px] flex justify-center"><Plus size={14} /></div>
             <span>Add Task</span>
-        </div>
+        </button>
       </div>
     </div>
   );
