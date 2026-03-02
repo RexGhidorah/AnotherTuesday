@@ -37,16 +37,16 @@ export default function MainTableView({ tasks, onUpdateTask, onNewItem }: MainTa
       {/* Table Header */}
       <div className="grid grid-cols-[40px_minmax(250px,2fr)_140px_140px_160px_180px_50px] divide-x divide-gray-200 border-b border-gray-200 bg-gray-50 text-xs font-semibold text-gray-500">
         <div className="flex items-center justify-center py-2">
-          <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+          <input type="checkbox" aria-label="Select all tasks" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
         </div>
         <div className="flex items-center px-3 py-2">Item</div>
         <div className="flex items-center px-3 py-2">Status</div>
         <div className="flex items-center px-3 py-2">Priority</div>
         <div className="flex items-center px-3 py-2">Due Date</div>
         <div className="flex items-center px-3 py-2">Person</div>
-        <div className="flex items-center justify-center py-2 hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600">
+        <button aria-label="Add new column" className="flex items-center justify-center py-2 hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
             <Plus size={16} />
-        </div>
+        </button>
       </div>
 
       {/* Table Body */}
@@ -63,7 +63,7 @@ export default function MainTableView({ tasks, onUpdateTask, onNewItem }: MainTa
           >
             {/* Checkbox */}
             <div className="flex items-center justify-center">
-              <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <input type="checkbox" aria-label="Select task" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity focus-visible:opacity-100" />
             </div>
 
             {/* Title Cell */}
@@ -108,8 +108,8 @@ export default function MainTableView({ tasks, onUpdateTask, onNewItem }: MainTa
             </div>
 
             {/* Actions */}
-            <div className="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <button className="text-gray-400 hover:text-gray-600">
+            <div className="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity focus-within:opacity-100">
+              <button aria-label="Task actions" title="Task actions" className="p-1 rounded text-gray-400 hover:bg-gray-200 hover:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
                 <MoreHorizontal size={16} />
               </button>
             </div>
@@ -117,13 +117,13 @@ export default function MainTableView({ tasks, onUpdateTask, onNewItem }: MainTa
         ))}
 
         {/* Add New Row */}
-        <div
+        <button
             onClick={onNewItem}
-            className="flex cursor-pointer items-center gap-2 border-b border-dashed border-gray-200 px-4 py-3 text-sm text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors"
+            className="flex w-full cursor-pointer items-center gap-2 border-b border-dashed border-gray-200 px-4 py-3 text-sm text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors focus-visible:outline-none focus-visible:bg-gray-50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500"
         >
             <div className="w-[40px] flex justify-center"><Plus size={14} /></div>
             <span>Add Task</span>
-        </div>
+        </button>
       </div>
     </div>
   );
