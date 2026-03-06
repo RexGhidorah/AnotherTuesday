@@ -2,6 +2,7 @@
 
 import { format, startOfWeek, addDays, startOfMonth, endOfMonth, endOfWeek, isSameMonth, isSameDay, addMonths, subMonths } from "date-fns";
 import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type Task = {
   id: string;
@@ -19,12 +20,24 @@ export default function CalendarView({ tasks }: { tasks: Task[] }) {
 
   const renderHeader = () => {
     return (
-      <div className="flex items-center justify-between py-4">
-        <button onClick={onPrevMonth} className="px-2 py-1 text-gray-600 hover:text-gray-900">&lt; Prev</button>
-        <div className="text-lg font-bold">
+      <div className="flex items-center justify-between py-4 px-2">
+        <button
+          onClick={onPrevMonth}
+          aria-label="Previous month"
+          className="rounded-full p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+        >
+          <ChevronLeft size={20} />
+        </button>
+        <div aria-live="polite" className="text-lg font-bold text-gray-800">
           {format(currentMonth, "MMMM yyyy")}
         </div>
-        <button onClick={onNextMonth} className="px-2 py-1 text-gray-600 hover:text-gray-900">Next &gt;</button>
+        <button
+          onClick={onNextMonth}
+          aria-label="Next month"
+          className="rounded-full p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+        >
+          <ChevronRight size={20} />
+        </button>
       </div>
     );
   };
@@ -32,7 +45,7 @@ export default function CalendarView({ tasks }: { tasks: Task[] }) {
   const renderDays = () => {
     const dateFormat = "EEEE";
     const days = [];
-    let startDate = startOfWeek(currentMonth);
+    const startDate = startOfWeek(currentMonth);
 
     for (let i = 0; i < 7; i++) {
       days.push(
