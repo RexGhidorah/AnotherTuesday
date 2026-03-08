@@ -66,10 +66,10 @@ export default function GlobalStorageWidget() {
                className="w-16 px-2 py-1 text-sm border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
              />
              <span className="text-sm text-slate-500">GB</span>
-             <button onClick={handleSave} disabled={isLoading} className="text-emerald-600 hover:bg-emerald-50 p-1 rounded">
+             <button onClick={handleSave} disabled={isLoading} aria-label="Save global storage limit" className="text-emerald-600 hover:bg-emerald-50 p-1 rounded">
                 <Check className="w-4 h-4" />
              </button>
-             <button onClick={() => { setIsEditing(false); setTempLimit(limit); }} className="text-red-500 hover:bg-red-50 p-1 rounded">
+             <button onClick={() => { setIsEditing(false); setTempLimit(limit); }} aria-label="Cancel editing global storage limit" className="text-red-500 hover:bg-red-50 p-1 rounded">
                 <X className="w-4 h-4" />
              </button>
           </div>
@@ -80,6 +80,7 @@ export default function GlobalStorageWidget() {
             </span>
             <button
                 onClick={() => setIsEditing(true)}
+                aria-label="Edit global storage limit"
                 className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-indigo-600 transition-all rounded hover:bg-indigo-50"
                 title="Modificar límite global"
             >

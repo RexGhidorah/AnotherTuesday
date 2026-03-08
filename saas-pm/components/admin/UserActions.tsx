@@ -34,6 +34,7 @@ export default function UserActions({ userId, currentRole, onUpdateRole, onDelet
     <div className="relative">
       <button
         onClick={toggleDropdown}
+        aria-label="User actions"
         className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded hover:bg-gray-100"
       >
         <MoreHorizontal size={18} />
