@@ -170,6 +170,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: Admin
                                   setOpenUserMenu(user.id);
                                 }
                               }}
+                              aria-label="Abrir menú de opciones de usuario"
                               className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
                             >
                               <MoreHorizontal className="w-5 h-5" />
@@ -218,6 +219,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: Admin
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setSelectedUser(null)}
+                aria-label="Volver a la lista de usuarios"
                 className="p-2 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 transition-colors shadow-sm"
               >
                 <ArrowLeft className="w-5 h-5" />
@@ -388,7 +390,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: Admin
                 {modalConfig.type === 'password' && 'Restablecer Contraseña'}
                 {modalConfig.type === 'suspend' && 'Eliminar Usuario'}
               </h3>
-              <button onClick={() => setModalConfig(null)} className="text-slate-400 hover:text-slate-600 transition-colors bg-white hover:bg-slate-100 rounded-lg p-1">
+              <button onClick={() => setModalConfig(null)} aria-label="Cerrar modal" className="text-slate-400 hover:text-slate-600 transition-colors bg-white hover:bg-slate-100 rounded-lg p-1">
                 <ArrowLeft className="w-5 h-5" />
               </button>
             </div>
