@@ -40,9 +40,12 @@ export default function SelectCell({ value, options, onChange, className }: Sele
 
   return (
     <div className={cn("relative h-full w-full", className)} ref={containerRef}>
-      <div
+      <button
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex h-full w-full cursor-pointer items-center justify-between px-3 py-2 hover:bg-gray-50"
+        className="group flex h-full w-full cursor-pointer items-center justify-between px-3 py-2 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500"
       >
         <span
           className={cn(
@@ -52,8 +55,8 @@ export default function SelectCell({ value, options, onChange, className }: Sele
         >
           {selectedOption?.label || value}
         </span>
-        <ChevronDown size={14} className="text-gray-400 opacity-0 group-hover:opacity-100" />
-      </div>
+        <ChevronDown size={14} className="text-gray-400 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100" />
+      </button>
 
       {isOpen && (
         <div className="absolute left-0 top-full z-10 mt-1 w-48 rounded-md border bg-white shadow-lg ring-1 ring-black ring-opacity-5">

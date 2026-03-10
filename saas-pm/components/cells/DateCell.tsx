@@ -49,16 +49,17 @@ export default function DateCell({ value, onChange, className }: DateCellProps) 
   }
 
   return (
-    <div
+    <button
+      type="button"
       onClick={() => setIsEditing(true)}
       className={cn(
-        "flex h-full w-full cursor-pointer items-center gap-2 px-3 py-2 text-sm text-gray-900 hover:bg-gray-50",
+        "flex h-full w-full cursor-pointer items-center gap-2 px-3 py-2 text-sm text-gray-900 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500",
         !value && "text-gray-400 italic",
         className
       )}
     >
       <Calendar size={14} className="text-gray-400" />
       {value ? format(new Date(value), "MMM d, yyyy") : "Set Date"}
-    </div>
+    </button>
   );
 }
