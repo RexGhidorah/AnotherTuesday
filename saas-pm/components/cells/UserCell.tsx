@@ -45,26 +45,29 @@ export default function UserCell({ value, onChange, className }: UserCellProps) 
 
   return (
     <div className={cn("relative h-full w-full", className)} ref={containerRef}>
-      <div
+      <button
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex h-full w-full cursor-pointer items-center gap-2 px-3 py-2 hover:bg-gray-50"
+        className="flex h-full w-full cursor-pointer items-center gap-2 px-3 py-2 text-left hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500"
       >
         {value ? (
           <>
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600 overflow-hidden">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600 overflow-hidden shrink-0">
                {value.image ? <img src={value.image} alt={value.name} className="h-full w-full object-cover"/> : (value.name?.[0] || "U")}
             </div>
             <span className="truncate text-xs text-gray-700">{value.name || "Unknown"}</span>
           </>
         ) : (
           <>
-            <div className="flex h-6 w-6 items-center justify-center rounded-full border border-dashed border-gray-300 text-gray-400">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full border border-dashed border-gray-300 text-gray-400 shrink-0">
                <User size={12} />
             </div>
-            <span className="text-xs text-gray-400 italic">Assign</span>
+            <span className="truncate text-xs text-gray-400 italic">Assign</span>
           </>
         )}
-      </div>
+      </button>
 
       {isOpen && (
         <div className="absolute left-0 top-full z-10 mt-1 w-56 rounded-md border bg-white shadow-lg ring-1 ring-black ring-opacity-5">

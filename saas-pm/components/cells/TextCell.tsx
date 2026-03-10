@@ -58,15 +58,16 @@ export default function TextCell({ value, onChange, placeholder, className }: Te
   }
 
   return (
-    <div
+    <button
+      type="button"
       onClick={() => setIsEditing(true)}
       className={cn(
-        "flex h-full w-full cursor-text items-center px-3 py-2 text-sm text-gray-900 hover:bg-gray-50",
+        "flex h-full w-full cursor-text items-center px-3 py-2 text-left text-sm text-gray-900 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500",
         !value && "text-gray-400 italic",
         className
       )}
     >
-      {value || placeholder || "Empty"}
-    </div>
+      <span className="truncate">{value || placeholder || "Empty"}</span>
+    </button>
   );
 }
