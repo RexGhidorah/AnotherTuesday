@@ -160,6 +160,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: Admin
                           <td className="px-6 py-4 font-medium text-slate-700">{user._count.workspaces}</td>
                           <td className="px-6 py-4 text-right">
                             <button
+                              aria-label="User actions"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 if (openUserMenu === user.id) setOpenUserMenu(null);
@@ -217,6 +218,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: Admin
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div className="flex items-center gap-4">
               <button
+                aria-label="Back to users list"
                 onClick={() => setSelectedUser(null)}
                 className="p-2 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 transition-colors shadow-sm"
               >
@@ -388,7 +390,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: Admin
                 {modalConfig.type === 'password' && 'Restablecer Contraseña'}
                 {modalConfig.type === 'suspend' && 'Eliminar Usuario'}
               </h3>
-              <button onClick={() => setModalConfig(null)} className="text-slate-400 hover:text-slate-600 transition-colors bg-white hover:bg-slate-100 rounded-lg p-1">
+              <button aria-label="Close modal" onClick={() => setModalConfig(null)} className="text-slate-400 hover:text-slate-600 transition-colors bg-white hover:bg-slate-100 rounded-lg p-1">
                 <ArrowLeft className="w-5 h-5" />
               </button>
             </div>
